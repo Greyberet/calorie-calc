@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Calorías para Comida Casera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        #ingredientList {
+            margin-top: 20px;
+        }
+        .ingredient {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Calorías para Comida Casera</h1>
+    
+    <label for="bowlWeight">Peso del Recipiente (g):</label>
+    <input type="number" id="bowlWeight" placeholder="Ingrese el peso del recipiente">
+    
+    <label for="totalWeight">Peso Total con Recipiente (g):</label>
+    <input type="number" id="totalWeight" placeholder="Ingrese el peso total">
+    
+    <h2>Ingredientes</h2>
+    <div id="ingredientInputs">
+        <div class="ingredient">
+            <input type="text" placeholder="Nombre del ingrediente" class="ingredientName">
+            <input type="number" placeholder="Peso (g)" class="ingredientWeight">
+            <input type="number" placeholder="Calorías por 100g" class="ingredientCalories">
+        </div>
+    </div>
+    <button onclick="addIngredient()">Añadir Ingrediente</button>
+    
+    <button onclick="calculateCalories()">Calcular Calorías</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        function addIngredient() {
+            const ingredientInputs = document.getElementById('ingredientInputs');
+            const newIngredient = document.createElement('div');
+            newIngredient.className = 'ingredient';
+            newIngredient.innerHTML = `
+                <input type="text" placeholder="Nombre del ingrediente" class="ingredientName">
+                <input type="number" placeholder="Peso (g)" class="ingredientWeight">
+                <input type="number" placeholder="Calorías por 100g" class="ingredientCalories">
+            `;
+            ingredientInputs.appendChild(newIngredient);
+        }
+
+        function calculateCalories() {
+            const bowlWeight = parseFloat(document.getElementById('bowlWeight').value) || 0;
+            const totalWeight = parseFloat(document.getElementById('totalWeight').value) || 0;
+            const foodWeight = totalWeight - bowlWeight;
+
+            let totalCalories = 0;
+            let totalIngredientWeight = 0;
+
+            const ingredients = document.getElementsByClassName('ingredient');
+            for (let ingredient of ingredients) {
+                const weight = parseFloat(ingredient.querySelector('.ingredientWeight').value) || 0;
+                const caloriesPer100g = parseFloat(ingredient.querySelector('.ingredientCalories').value) || 0;
+                
+                totalCalories += (weight / 100) * caloriesPer100g;
+                totalIngredientWeight += weight;
+            }
+
+            const caloriesPerGram = totalCalories / totalIngredientWeight;
+            const totalDishCalories = caloriesPerGram * foodWeight;
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <h3>Resultados:</h3>
+                <p>Peso total de la comida: ${foodWeight.toFixed(2)} g</p>
+                <p>Calorías totales en el plato: ${totalDishCalories.toFixed(2)} calorías</p>
+                <p>Calorías por 100g: ${(caloriesPerGram * 100).toFixed(2)} calorías</p>
+            `;
+        }
+    </script>
+</body>
+</html>
